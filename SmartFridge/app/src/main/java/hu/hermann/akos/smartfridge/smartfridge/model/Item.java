@@ -1,6 +1,7 @@
 package hu.hermann.akos.smartfridge.smartfridge.model;
 
 /**
+ * Created by a.hermann on 2015. 12. 07..
  */
 public class Item {
     private String name;
