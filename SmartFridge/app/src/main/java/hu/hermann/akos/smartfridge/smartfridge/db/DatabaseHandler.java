@@ -20,16 +20,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     /*
      * Fields for db
      */
-    private static final int VERSION = 1;
+    private static final int VERSION = 4;
     private static final String DATABASE_NAME = "FRIDGE";
     private static final String TABLE_FRIDGE = "fridge_items";
     private static final String KEY_NAME = "name";
     private static final String KEY_AMOUNT = "amount";
     private static final String KEY_PRICE = "price";
-
-    public DatabaseHandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, factory, version);
-    }
 
     public DatabaseHandler(Context context){
         super(context, DATABASE_NAME, null, VERSION);
@@ -37,8 +33,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_FRIDGE_ITEMS_TABLE = "CREATE TABLE " + TABLE_FRIDGE + "(" + KEY_NAME + "TEXT PRIMARY KEY,"
-                + KEY_AMOUNT + "INTEGER, " + KEY_PRICE + "FLOAT" + ")";
+        String CREATE_FRIDGE_ITEMS_TABLE = "CREATE TABLE " + TABLE_FRIDGE + "(" + KEY_NAME + " TEXT,"
+                + KEY_AMOUNT + " INTEGER, " + KEY_PRICE + " FLOAT" + ")";
         db.execSQL(CREATE_FRIDGE_ITEMS_TABLE);
     }
 
@@ -87,13 +83,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public List<Item> getAllItems(){
         List<Item> itemList = new ArrayList<>();
 
-        SQLiteDatabase database = this.getReadableDatabase();
+        SQLiteDatabase database = this.getWritableDatabase();
         Cursor cursor = database.rawQuery("SELECT * FROM " + TABLE_FRIDGE, null);
         if(cursor.moveToFirst()) {
-            while (cursor.moveToFirst()) {
-                Item item = new Item(cursor.getString(0), cursor.getInt(1), cursor.getDouble(2));
+            do{
+                Item item = new Item(cursor.getString(0), Integer.valueOf(cursor.getString(1)), Double.valueOf(cursor.getString(2)));
                 itemList.add(item);
-            }
+            }while (cursor.moveToNext());
         }
         return itemList;
     }
