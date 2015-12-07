@@ -8,11 +8,21 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
+import android.widget.ListView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import hu.hermann.akos.smartfridge.smartfridge.R;
+import hu.hermann.akos.smartfridge.smartfridge.adapter.ItemArrayAdapter;
+import hu.hermann.akos.smartfridge.smartfridge.db.DatabaseHandler;
+import hu.hermann.akos.smartfridge.smartfridge.model.Item;
 
 public class MainActivity extends AppCompatActivity {
-
+    private ListView listView;
+    private List<Item> itemList;
+    private ItemArrayAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,6 +30,16 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        Item item = new Item("Milk", 2, 250);
+        final DatabaseHandler databaseHandler = new DatabaseHandler(this);
+        databaseHandler.addItem(item);
+
+        itemList = databaseHandler.getAllItems();
+
+        adapter = new ItemArrayAdapter(this, android.R.layout.simple_list_item_1, R.layout.item_list_item, itemList);
+        listView = (ListView) findViewById(R.id.list_view_dummy);
+        listView.setAdapter(adapter);
+        
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
